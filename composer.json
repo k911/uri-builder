@@ -1,0 +1,38 @@
+{
+    "name": "k911/uri-builder",
+    "description": "UriBuilder library simplifies manipulation of Uri value objects compatible with PSR-7",
+    "keywords": [
+        "uri",
+        "builder",
+        "psr-7",
+        "http"
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.1",
+        "ext-mbstring": "*",
+        "league/uri": "^5.0",
+        "psr/http-message": "^1.0"
+    },
+    "scripts": {
+        "test": "phpunit; php-cs-fixer fix src/ -v --diff --dry-run --allow-risky=yes;",
+        "fix": "php-cs-fixer fix src/ -v; php-cs-fixer fix tests/ -v;"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2",
+        "friendsofphp/php-cs-fixer": "^2.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "k911",
+            "email": "konradobal@gmail.com",
+            "homepage": "https://github.com/k911"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "K911\\UriBuilder\\": "./src"
+        }
+    }
+}

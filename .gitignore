@@ -1,0 +1,11 @@
+# User
+spikes/
+
+# IDE
+.code/
+.idea/
+
+# Package
+composer.lock
+.php_cs.cache
+vendor/
