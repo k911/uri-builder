@@ -2,7 +2,7 @@
 spikes/
 
 # IDE
-.code/
+.vscode/
 .idea/
 
 # Package
