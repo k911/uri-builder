@@ -120,7 +120,7 @@ class UriBuilder implements UriBuilderInterface
             throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
-        $query = http_build_query($pairs, '', static::URI_QUERY_SEPARATOR, PHP_QUERY_RFC3986);
+        $query = http_build_query($pairs, '', static::URI_QUERY_SEPARATOR, PHP_QUERY_RFC1738);
 
         $this->uri = $this->uri->withQuery($query);
         return $this;

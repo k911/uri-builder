@@ -1,30 +1,8 @@
-# UriBuilder
-Simplifies manipulation of URI value objects compatible with PSR-7. Under the hood, it utilizes `League\Uri` powerful [library](http://uri.thephpleague.com/). Dependency Injection ready.
+<?php
+declare(strict_types=1);
 
-- [Installation](#installation)
-- [Supported Schemes](#supported-schemes)
-- [Usage](#Usage)
+require __DIR__ . '/../vendor/autoload.php';
 
-## Installation
-```
-// soon
-```
-
-## Supported Schemes
-Currently supported, tested, URI schemes that UriBuilder can manage and parse from bare URI string or URI components.
-
-- http/https
-- ftp/sftp
-- ws/wss
-- file
-- data
-
-## Usage
-
-**Full public interface is available [here](src/UriBuilderInterface.php).**
-
-Usage example:
-```php
 // Simple URI string
 $uri = 'wss://foo.bar:9999';
 
@@ -59,4 +37,3 @@ $builder
 // Print result
 echo (string) $builder->getUri() . PHP_EOL;
 // https://api.foo.bar/v1?api_token=Qwerty%21+%40%23%24TYu#foobar
-```
