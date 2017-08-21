@@ -3,25 +3,14 @@ declare(strict_types=1);
 
 namespace K911\UriBuilder;
 
-use K911\UriBuilder\Exception\InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
 interface UriBuilderInterface
 {
     /**
-     * Determines whether Uri instance is compatible with scheme provided
-     *
-     * @param string $scheme
-     * @param UriInterface $uri
-     * @throws InvalidArgumentException Scheme is not supported by UriBuilder
-     * @return bool
-     */
-    public static function isSchemeCompatible(string $scheme, UriInterface $uri): bool;
-
-    /**
      * Create a new Uri instance from an URI string in UriBuilderInterface
      *
-     * @param string $uri
+     * @param string $uri URI string
      * @return UriBuilderInterface
      */
     public function fromString(string $uri): self;
@@ -87,7 +76,7 @@ interface UriBuilderInterface
      * information.
      *
      * @param int|null $port The port to use with the new instance; a null value
-     *     removes the port information.
+     *                       removes the port information.
      * @return UriBuilderInterface
      */
     public function setPort(int $port = null): self;
@@ -126,10 +115,11 @@ interface UriBuilderInterface
      *
      * An empty array is equivalent to removing the query pairs.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.4
      * @param string[] $pairs Pairs of "key=value" represented in URI as query
      * @return UriBuilderInterface
+     *
+     * @see https://tools.ietf.org/html/rfc3986#section-2
+     * @see https://tools.ietf.org/html/rfc3986#section-3.4
      */
     public function setQuery(array $pairs): self;
 
@@ -141,10 +131,11 @@ interface UriBuilderInterface
      *
      * An empty fragment value is equivalent to removing the fragment.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.5
      * @param string $fragment The fragment to use with the new instance.
      * @return UriBuilderInterface
+     *
+     * @see https://tools.ietf.org/html/rfc3986#section-2
+     * @see https://tools.ietf.org/html/rfc3986#section-3.5
      */
     public function setFragment(string $fragment): self;
 
@@ -153,8 +144,8 @@ interface UriBuilderInterface
      *
      * @return UriInterface
      *
-     * @link http://www.php-fig.org/psr/psr-7/ (UriInterface specification)
-     * @link http://tools.ietf.org/html/rfc3986 (the URI specification)
+     * @see http://www.php-fig.org/psr/psr-7/ (UriInterface specification)
+     * @see http://tools.ietf.org/html/rfc3986 (the URI specification)
      */
     public function getUri(): UriInterface;
 }

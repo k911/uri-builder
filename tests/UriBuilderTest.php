@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use K911\UriBuilder\UriBuilder;
+use K911\UriBuilder\UriFactory;
 use PHPUnit\Framework\TestCase;
 
 class UriBuilderTest extends TestCase
@@ -10,6 +11,7 @@ class UriBuilderTest extends TestCase
      * Not used host in valid uri providers
      */
     const UNUSED_HOST = 'unused.host.com';
+
     /**
      * @var UriBuilder
      */
@@ -17,7 +19,7 @@ class UriBuilderTest extends TestCase
 
     public function setUp()
     {
-        $this->builder = new UriBuilder();
+        $this->builder = new UriBuilder(new UriFactory());
     }
 
     public function validUriProvider(): array

@@ -3,138 +3,146 @@ declare(strict_types=1);
 
 namespace K911\UriBuilder;
 
-use K911\UriBuilder\Adapter\DataUriAdapter;
-use K911\UriBuilder\Adapter\FileUriAdapter;
-use K911\UriBuilder\Adapter\FtpUriAdapter;
-use K911\UriBuilder\Adapter\WsUriAdapter;
 use K911\UriBuilder\Exception\InvalidArgumentException;
-use League\Uri\Parser;
-use League\Uri\Schemes\AbstractUri;
-use League\Uri\Schemes\Http;
 use Psr\Http\Message\UriInterface;
 
-/**
- * Class UriBuilder
- *
- * League\Uri wrapper class for easy building and manipulating URIs
- *
- * @package K911\UriBuilder
- * @author k911
- */
-class UriBuilder extends AbstractUriBuilder
+class UriBuilder implements UriBuilderInterface
 {
     /**
-     * Used when no scheme is provided to initialize Uri instance in UriBuilder
+     * Separator character of query pairs in URI string
      */
-    protected const DEFAULT_SCHEME = 'https';
+    protected const URI_QUERY_SEPARATOR = '&';
 
     /**
-     * Supported schemes and corresponding classes extending AbstractUri
-     * @var AbstractUri[]
+     * @var UriInterface The internal value object representing an URI
      */
-    protected const SUPPORTED_SCHEMES = [
-        'data' => DataUriAdapter::class,
-        'file' => FileUriAdapter::class,
-        'ftp' => FtpUriAdapter::class,
-        'sftp' => FtpUriAdapter::class,
-        'https' => Http::class,
-        'http' => Http::class,
-        'ws' => WsUriAdapter::class,
-        'wss' => WsUriAdapter::class,
-    ];
+    protected $uri;
 
     /**
-     * @var Parser League Parser Instance
+     * @var UriFactoryInterface
      */
-    private static $parser;
+    protected $factory;
 
     /**
-     * Transforms Uri instance into another Uri instance
-     * with different scheme and adjusted components
-     *
-     * @param UriInterface $uri Uri instance to be transformed
-     * @param string $scheme New scheme
-     * @return UriInterface Transformed Uri instance compatible with new scheme
+     * UriBuilder constructor.
+     * @param UriFactoryInterface $factory
      */
-    protected static function transform(UriInterface $uri, string $scheme): UriInterface
+    public function __construct(UriFactoryInterface $factory)
     {
-        $components = self::parseUri((string)$uri);
-        $components['scheme'] = $scheme;
-        return self::createFromComponents($components);
-    }
-
-
-    /**
-     * Parses URI string into components array
-     * similar to returned by parse_url function
-     *
-     * @param string $uri
-     * @return array components
-     */
-    protected static function parseUri(string $uri): array
-    {
-        return self::getParser()->__invoke($uri);
+        $this->factory = $factory;
     }
 
     /**
-     * Create a new internal Uri instance (in UriBuilder)
-     * from an URI string
+     * Clones an Uri instance to assign as internal Uri instance in UriBuilder
      *
-     * @param string $uri
+     * @param UriInterface $uri
      * @return UriBuilderInterface
      */
-    public function fromString(string $uri): UriBuilderInterface
+    public function fromUri(UriInterface $uri): UriBuilderInterface
     {
-        return $this->fromComponents(self::parseUri($uri));
-    }
-
-    /**
-     * Create a new internal Uri instance (in UriBuilder)
-     * from a hash of parse_url parts
-     *
-     * @param array $components a hash representation of the URI similar
-     *                          to PHP parse_url function result
-     * @return UriBuilderInterface
-     */
-    public function fromComponents(array $components): UriBuilderInterface
-    {
-        $this->uri = self::createFromComponents($components);
+        $this->uri = clone $uri;
         return $this;
     }
 
-    /**
-     * Get League Parser object
-     * @return Parser League Parser object
-     */
-    private static function getParser(): Parser
+    public function fromString(string $uri): UriBuilderInterface
     {
-        if (!isset(self::$parser)) {
-            self::$parser = new Parser();
-        }
-
-        return self::$parser;
+        $this->uri = $this->factory->create($uri);
+        return $this;
     }
 
-    /**
-     * Create a new Uri instance from a hash of parse_url parts
-     *
-     * @param array $components a hash representation of the URI similar
-     *                          to PHP parse_url function result
-     * @throws InvalidArgumentException
-     * @return UriInterface
-     */
-    private static function createFromComponents(array $components): UriInterface
+    public function fromComponents(array $components): UriBuilderInterface
     {
-        if (empty($components['scheme'])) {
-            throw new InvalidArgumentException("Defined scheme is required in components array.", 400);
+        $this->uri = $this->factory->createFromComponents($components);
+        return $this;
+    }
+
+
+    public function setScheme(string $scheme): UriBuilderInterface
+    {
+        if (!isset($this->uri)) {
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
-        $scheme = self::normalizeString($components['scheme']);
+        $this->uri = $this->factory->isSchemeCompatible($scheme, $this->uri) ?
+            $this->uri->withScheme($scheme) :
+            $this->factory->transform($this->uri, $scheme);
 
-        if (!array_key_exists($scheme, static::SUPPORTED_SCHEMES)) {
-            throw new InvalidArgumentException("Scheme `$scheme` has not been supported yet.", 501);
+        return $this;
+    }
+
+    public function setUserInfo(string $user, string $password = null): UriBuilderInterface
+    {
+        if (!isset($this->uri)) {
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
-        return call_user_func([static::SUPPORTED_SCHEMES[$scheme], 'createFromComponents'], $components);
+        $this->uri = $this->uri->withUserInfo($user, $password);
+        return $this;
+    }
+
+
+    public function setHost(string $host): UriBuilderInterface
+    {
+        if (!isset($this->uri)) {
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        }
+
+        $this->uri = $this->uri->withHost($host);
+        return $this;
+    }
+
+
+    public function setPort(int $port = null): UriBuilderInterface
+    {
+        if (!isset($this->uri)) {
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        }
+
+        $this->uri = $this->uri->withPort($port);
+        return $this;
+    }
+
+
+    public function setPath(string $path): UriBuilderInterface
+    {
+        if (!isset($this->uri)) {
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        }
+
+        $this->uri = $this->uri->withPath($path);
+        return $this;
+    }
+
+
+    public function setQuery(array $pairs): UriBuilderInterface
+    {
+        if (!isset($this->uri)) {
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        }
+
+        $query = http_build_query($pairs, '', static::URI_QUERY_SEPARATOR, PHP_QUERY_RFC3986);
+
+        $this->uri = $this->uri->withQuery($query);
+        return $this;
+    }
+
+    public function setFragment(string $fragment): UriBuilderInterface
+    {
+        if (!isset($this->uri)) {
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        }
+
+        $this->uri = $this->uri->withFragment($fragment);
+        return $this;
+    }
+
+
+    public function getUri(): UriInterface
+    {
+        if (!isset($this->uri)) {
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        }
+
+        return clone $this->uri;
     }
 }
