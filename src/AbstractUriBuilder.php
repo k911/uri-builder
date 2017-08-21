@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace K911\UriBuilder;
 
-use K911\UriBuilder\Exception\UriBuilderException;
+use K911\UriBuilder\Exception\InvalidArgumentException;
+use K911\UriBuilder\Exception\NotSupportedException;
 use Psr\Http\Message\UriInterface;
 
 abstract class AbstractUriBuilder implements UriBuilderInterface
@@ -52,13 +53,15 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
      * @param string $scheme
      * @param UriInterface $uri
      * @return bool
+     *
+     * @throws NotSupportedException
      */
     public static function isSchemeCompatible(string $scheme, UriInterface $uri): bool
     {
         $scheme = self::normalizeString($scheme);
 
         if (!array_key_exists($scheme, static::SUPPORTED_SCHEMES)) {
-            throw new UriBuilderException("Scheme `$scheme` has not been supported yet.", 501);
+            throw new NotSupportedException("Scheme `$scheme` has not been supported yet.", 501);
         }
 
         $schemeClass = static::SUPPORTED_SCHEMES[$scheme];
@@ -80,8 +83,8 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
     /**
      * Base constructor.
      * @param UriInterface|array|string|null $uri Instance of URI object,
-     *                                                array of URI components,
-     *                                                URI string, or null.
+     *                                            array of URI components,
+     *                                            URI string, or null.
      */
     public function __construct($uri = null)
     {
@@ -94,7 +97,7 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
                 $this->fromString($uri);
             } else {
                 $reflection = new \ReflectionClass($uri);
-                throw new UriBuilderException("Instance of `{$reflection->getShortName()}` cannot be transformed into an URI object instance.", 501);
+                throw new InvalidArgumentException("Instance of `{$reflection->getShortName()}` cannot be transformed into an URI object instance.", 501);
             }
         }
     }
@@ -110,7 +113,7 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
     public function setScheme(string $scheme): UriBuilderInterface
     {
         if (!isset($this->uri)) {
-            throw new UriBuilderException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
         $this->uri = self::isSchemeCompatible($scheme, $this->uri)
@@ -134,7 +137,7 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
     public function setUserInfo(string $user, string $password = null): UriBuilderInterface
     {
         if (!isset($this->uri)) {
-            throw new UriBuilderException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
         $this->uri = $this->uri->withUserInfo($user, $password);
@@ -152,7 +155,7 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
     public function setHost(string $host): UriBuilderInterface
     {
         if (!isset($this->uri)) {
-            throw new UriBuilderException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
         $this->uri = $this->uri->withHost($host);
@@ -175,7 +178,7 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
     public function setPort(int $port = null): UriBuilderInterface
     {
         if (!isset($this->uri)) {
-            throw new UriBuilderException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
         $this->uri = $this->uri->withPort($port);
@@ -203,7 +206,7 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
     public function setPath(string $path): UriBuilderInterface
     {
         if (!isset($this->uri)) {
-            throw new UriBuilderException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
         $this->uri = $this->uri->withPath($path);
@@ -224,15 +227,16 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
      *
      * An empty array is equivalent to removing the query pairs.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.4
      * @param string[] $pairs Pairs of "key=value" represented in URI as query
      * @return UriBuilderInterface
+     *
+     * @see https://tools.ietf.org/html/rfc3986#section-2
+     * @see https://tools.ietf.org/html/rfc3986#section-3.4
      */
     public function setQuery(array $pairs): UriBuilderInterface
     {
         if (!isset($this->uri)) {
-            throw new UriBuilderException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
         $query = http_build_query($pairs, '', static::URI_QUERY_SEPARATOR, PHP_QUERY_RFC3986);
@@ -249,15 +253,16 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
      *
      * An empty fragment value is equivalent to removing the fragment.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.5
      * @param string $fragment The fragment to use with the new instance.
      * @return UriBuilderInterface
+     *
+     * @see https://tools.ietf.org/html/rfc3986#section-2
+     * @see https://tools.ietf.org/html/rfc3986#section-3.5
      */
     public function setFragment(string $fragment): UriBuilderInterface
     {
         if (!isset($this->uri)) {
-            throw new UriBuilderException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
         $this->uri = $this->uri->withFragment($fragment);
@@ -269,8 +274,8 @@ abstract class AbstractUriBuilder implements UriBuilderInterface
      *
      * @return UriInterface
      *
-     * @link http://www.php-fig.org/psr/psr-7/ (UriInterface specification)
-     * @link http://tools.ietf.org/html/rfc3986 (the URI specification)
+     * @see http://www.php-fig.org/psr/psr-7/ (UriInterface specification)
+     * @see http://tools.ietf.org/html/rfc3986 (the URI specification)
      */
     public function getUri(): UriInterface
     {

@@ -7,7 +7,7 @@ use K911\UriBuilder\Adapter\DataUriAdapter;
 use K911\UriBuilder\Adapter\FileUriAdapter;
 use K911\UriBuilder\Adapter\FtpUriAdapter;
 use K911\UriBuilder\Adapter\WsUriAdapter;
-use K911\UriBuilder\Exception\UriBuilderException;
+use K911\UriBuilder\Exception\InvalidArgumentException;
 use League\Uri\Parser;
 use League\Uri\Schemes\AbstractUri;
 use League\Uri\Schemes\Http;
@@ -120,19 +120,19 @@ class UriBuilder extends AbstractUriBuilder
      *
      * @param array $components a hash representation of the URI similar
      *                          to PHP parse_url function result
-     * @throws UriBuilderException
+     * @throws InvalidArgumentException
      * @return UriInterface
      */
     private static function createFromComponents(array $components): UriInterface
     {
         if (empty($components['scheme'])) {
-            throw new UriBuilderException("Defined scheme is required in components array.", 400);
+            throw new InvalidArgumentException("Defined scheme is required in components array.", 400);
         }
 
         $scheme = self::normalizeString($components['scheme']);
 
         if (!array_key_exists($scheme, static::SUPPORTED_SCHEMES)) {
-            throw new UriBuilderException("Scheme `$scheme` has not been supported yet.", 501);
+            throw new InvalidArgumentException("Scheme `$scheme` has not been supported yet.", 501);
         }
 
         return call_user_func([static::SUPPORTED_SCHEMES[$scheme], 'createFromComponents'], $components);

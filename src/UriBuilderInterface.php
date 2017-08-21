@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace K911\UriBuilder;
 
-use K911\UriBuilder\Exception\UriBuilderException;
+use K911\UriBuilder\Exception\InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
 interface UriBuilderInterface
@@ -13,7 +13,7 @@ interface UriBuilderInterface
      *
      * @param string $scheme
      * @param UriInterface $uri
-     * @throws UriBuilderException Scheme is not supported by UriBuilder
+     * @throws InvalidArgumentException Scheme is not supported by UriBuilder
      * @return bool
      */
     public static function isSchemeCompatible(string $scheme, UriInterface $uri): bool;
