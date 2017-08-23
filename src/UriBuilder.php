@@ -12,6 +12,12 @@ class UriBuilder implements UriBuilderInterface
      * Separator character of query pairs in URI string
      */
     protected const URI_QUERY_SEPARATOR = '&';
+    
+    /**
+     * RFC used when building query string
+     * @link http://php.net/manual/pl/function.http-build-query.php#refsect1-function.http-build-query-parameters
+     */
+    protected const PHP_QUERY_RFC = PHP_QUERY_RFC1738;
 
     /**
      * @var UriInterface The internal value object representing an URI
@@ -31,22 +37,16 @@ class UriBuilder implements UriBuilderInterface
     {
         $this->factory = $factory;
     }
-
-    /**
-     * Clones an Uri instance to assign as internal Uri instance in UriBuilder
-     *
-     * @param UriInterface $uri
-     * @return UriBuilderInterface
-     */
-    public function fromUri(UriInterface $uri): UriBuilderInterface
+    
+    public function from(string $uri): UriBuilderInterface
     {
-        $this->uri = clone $uri;
+        $this->uri = $this->factory->create($uri);
         return $this;
     }
 
-    public function fromString(string $uri): UriBuilderInterface
+    public function fromUri(UriInterface $uri): UriBuilderInterface
     {
-        $this->uri = $this->factory->create($uri);
+        $this->uri = clone $uri;
         return $this;
     }
 
@@ -120,7 +120,7 @@ class UriBuilder implements UriBuilderInterface
             throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
         }
 
-        $query = http_build_query($pairs, '', static::URI_QUERY_SEPARATOR, PHP_QUERY_RFC1738);
+        $query = http_build_query($pairs, '', static::URI_QUERY_SEPARATOR, static::PHP_QUERY_RFC);
 
         $this->uri = $this->uri->withQuery($query);
         return $this;

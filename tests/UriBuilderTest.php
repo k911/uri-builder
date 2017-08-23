@@ -25,14 +25,22 @@ class UriBuilderTest extends TestCase
     public function validUriProvider(): array
     {
         return array_merge([
+            'file' => [
+                'file://localhost/../foo/bar',
+                'file:///../foo/bar',
+            ],
+            'file' => [
+                'file://localhost/../foo/bar',
+                'file://./../foo/bar',
+            ],
             'data' => [
                 'data:text/plain;charset=utf-8,FooBarWithSpecialChars%20%20%C4%85%C4%87%C4%99%C5%82',
                 'data:text/plain;charset=utf-8,FooBarWithSpecialChars%20%20%C4%85%C4%87%C4%99%C5%82',
             ]
-        ], $this->validUriProviderWithHost());
+        ], $this->validUriWithHostProvider());
     }
 
-    public function validUriProviderWithHost(): array
+    public function validUriWithHostProvider(): array
     {
         return [
             'http' => [
@@ -60,8 +68,8 @@ class UriBuilderTest extends TestCase
                 'WsS://eXamPLE.cOm:443/foo/bar?foo=bar',
             ],
             'file' => [
-                'file://localhost/foo/bar',
-                'file:///foo/bar',
+                'file://cdn.example.com/foo/bar',
+                'file://cdn.eXamPLE.cOm/foo/bar',
             ],
         ];
     }
@@ -72,21 +80,37 @@ class UriBuilderTest extends TestCase
      * @param string $expected
      * @param string $uri
      */
-    public function testSetUpFromString(string $expected, string $uri)
+    public function testSetUpfrom(string $expected, string $uri)
     {
-        $uri = $this->builder->fromString($uri)->getUri();
+        $uri = $this->builder->from($uri)->getUri();
+        $this->assertSame($expected, (string) $uri);
+    }
+    
+    /**
+     * @dataProvider validUriWithHostProvider
+     *
+     * @param string $expected
+     * @param string $uri
+     */
+    public function testSetUpfromComponents(string $expected, string $uri)
+    {
+        // TODO: Use Parser() instead
+        $components = parse_url($uri);
+        $this->assertNotEquals(false, $components);
+        
+        $uri = $this->builder->fromComponents($components)->getUri();
         $this->assertSame($expected, (string) $uri);
     }
 
     /**
-     * @dataProvider validUriProviderWithHost
+     * @dataProvider validUriWithHostProvider
      *
      * @param string $expected
      * @param string $uri
      */
     public function testImmutability(string $expected, string $uri)
     {
-        $uri = $this->builder->fromString($uri)
+        $uri = $this->builder->from($uri)
             ->getUri();
 
         $new_uri = $this->builder->fromUri($uri)
@@ -96,7 +120,7 @@ class UriBuilderTest extends TestCase
         $this->assertNotEquals((string) $uri, (string) $new_uri);
         $this->assertNotEquals($expected, (string) $new_uri);
 
-        $expected = $this->builder->fromString($expected)
+        $expected = $this->builder->from($expected)
             ->setHost(self::UNUSED_HOST)
             ->getUri();
 

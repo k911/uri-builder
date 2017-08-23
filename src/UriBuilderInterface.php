@@ -13,7 +13,7 @@ interface UriBuilderInterface
      * @param string $uri URI string
      * @return UriBuilderInterface
      */
-    public function fromString(string $uri): self;
+    public function from(string $uri): self;
 
     /**
      * Clones an Uri instance and assigns to an UriBuilderInterface

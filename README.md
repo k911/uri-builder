@@ -35,7 +35,7 @@ $factory = new K911\UriBuilder\UriFactory();
 $builder = new K911\UriBuilder\UriBuilder($factory);
 
 // Intiliaze UriBuilder with URI string
-$builder->fromString($uri);
+$builder->from($uri);
 // or $builder->fromUri(UriInterface $uri);
 // or $builder->fromComponents(array $components);
 
