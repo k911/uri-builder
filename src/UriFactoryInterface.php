@@ -45,15 +45,6 @@ interface UriFactoryInterface
     public function transform(UriInterface $uri, string $scheme): UriInterface;
 
     /**
-     * Parses an URI string into array of components.
-     * This method MUST return array with all parts (their keys) accessible.
-     *
-     * @param string $uri An URI string to be parsed
-     * @return array a hash representation of the URI similar to PHP parse_url function result
-     */
-    public function parse(string $uri): array;
-
-    /**
      * Determines whether provided Uri instance is compatible with provided URI scheme
      * Remarks: When URI scheme is compatible it means that an Uri instance does not need
      * to be transformed to support this scheme

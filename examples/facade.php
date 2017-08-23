@@ -6,17 +6,11 @@ require __DIR__ . '/../vendor/autoload.php';
 // Simple URI string
 $uri = 'wss://foo.bar:9999';
 
-// Create UriBuilder and its dependencies
-// ..you should either use DI container to manage it
-// ..or use UriBuilder facade
-$parser = new K911\UriBuilder\Adapter\UriParserAdapter();
-$factory = new K911\UriBuilder\UriFactory($parser);
-$builder = new K911\UriBuilder\UriBuilder($factory);
-
-// Intiliaze UriBuilder with URI string
-$builder->from($uri);
-// or $builder->fromUri(UriInterface $uri);
-// or $builder->fromComponents(array $components);
+// Intiliaze UriBuilder with URI string using facade
+// Facade takes care of managing UriBuilder dependencies
+$builder = K911\UriBuilder\Facade\UriBuilder::from($uri);
+// or UriBuilder::fromUri(UriInterface $uri);
+// or UriBuilder::fromComponents(array $components);
 
 // UriBuilder is mutable, and allows method chaining
 $builder

@@ -16,19 +16,14 @@ abstract class AbstractUriFactory implements UriFactoryInterface
     protected const SUPPORTED_SCHEMES = [];
 
     /**
-     * Structure of URI components array
-     * @var array
+     * @var UriParserInterface
      */
-    protected const EMPTY_COMPONENTS = [
-        'scheme' => null,
-        'user' => null,
-        'pass' => null,
-        'host' => null,
-        'port' => null,
-        'path' => '',
-        'query' => null,
-        'fragment' => null,
-    ];
+    protected $parser;
+
+    public function __construct(UriParserInterface $parser)
+    {
+        $this->parser = $parser;
+    }
 
     /**
      * Create a new Uri instance from an URI string
@@ -39,7 +34,7 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      */
     public function create(string $uri): UriInterface
     {
-        return $this->createFromComponents($this->parse($uri));
+        return $this->createFromComponents($this->parser->parse($uri));
     }
 
     /**
@@ -54,7 +49,7 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      */
     public function transform(UriInterface $uri, string $scheme): UriInterface
     {
-        $components = $this->parse((string)$uri);
+        $components = $this->parser->parse((string) $uri);
         $components['scheme'] = $this->normalizeString($scheme);
         return $this->createFromComponents($components);
     }
@@ -114,16 +109,5 @@ abstract class AbstractUriFactory implements UriFactoryInterface
     protected function normalizeString(string $input): string
     {
         return mb_strtolower(trim($input));
-    }
-
-    /**
-     * Adds missing URI parts in components array
-     *
-     * @param array $components
-     * @return array
-     */
-    protected function normalizeComponents(array $components): array
-    {
-        return array_merge(static::EMPTY_COMPONENTS, $components);
     }
 }

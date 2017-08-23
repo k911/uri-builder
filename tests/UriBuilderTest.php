@@ -1,8 +1,13 @@
 <?php
 declare(strict_types=1);
 
+use K911\UriBuilder\Adapter\UriParserAdapter;
+use K911\UriBuilder\UriParserInterface;
 use K911\UriBuilder\UriBuilder;
+use K911\UriBuilder\UriBuilderInterface;
 use K911\UriBuilder\UriFactory;
+use K911\UriBuilder\UriFactoryInterface;
+use K911\UriBuilder\Facade\UriBuilder as UriBuilderFacade;
 use PHPUnit\Framework\TestCase;
 
 class UriBuilderTest extends TestCase
@@ -13,13 +18,25 @@ class UriBuilderTest extends TestCase
     const UNUSED_HOST = 'unused.host.com';
 
     /**
-     * @var UriBuilder
+     * @var UriBuilderInterface
      */
     private $builder;
 
+    /**
+     * @var UriFactorynterface
+     */
+    private $factory;
+
+    /**
+     * @var UriParserInterface
+     */
+    private $parser;
+
     public function setUp()
     {
-        $this->builder = new UriBuilder(new UriFactory());
+        $this->parser = new UriParserAdapter();
+        $this->factory = new UriFactory($this->parser);
+        $this->builder = new UriBuilder($this->factory);
     }
 
     public function validUriProvider(): array
@@ -85,7 +102,7 @@ class UriBuilderTest extends TestCase
         $uri = $this->builder->from($uri)->getUri();
         $this->assertSame($expected, (string) $uri);
     }
-    
+
     /**
      * @dataProvider validUriWithHostProvider
      *
@@ -97,7 +114,7 @@ class UriBuilderTest extends TestCase
         // TODO: Use Parser() instead
         $components = parse_url($uri);
         $this->assertNotEquals(false, $components);
-        
+
         $uri = $this->builder->fromComponents($components)->getUri();
         $this->assertSame($expected, (string) $uri);
     }
@@ -113,17 +130,38 @@ class UriBuilderTest extends TestCase
         $uri = $this->builder->from($uri)
             ->getUri();
 
-        $new_uri = $this->builder->fromUri($uri)
+        $newUri = $this->builder->fromUri($uri)
             ->setHost(self::UNUSED_HOST)
             ->getUri();
 
-        $this->assertNotEquals((string) $uri, (string) $new_uri);
-        $this->assertNotEquals($expected, (string) $new_uri);
+        $this->assertFalse($uri === $newUri);
+        $this->assertNotEquals((string) $uri, (string) $newUri);
+        $this->assertNotEquals($expected, (string) $newUri);
 
         $expected = $this->builder->from($expected)
             ->setHost(self::UNUSED_HOST)
             ->getUri();
 
-        $this->assertSame((string) $expected, (string) $new_uri);
+        $this->assertSame((string) $expected, (string) $newUri);
+    }
+
+    /**
+     * @dataProvider validUriWithHostProvider
+     *
+     * @param string $expected
+     * @param string $uri
+     */
+    public function testFacade(string $expected, string $uri)
+    {
+        $newUri = UriBuilderFacade::from($uri)->getUri();
+        $this->assertSame($expected, (string) $newUri);
+
+        // TODO: Use Parser() instead
+        $components = parse_url($uri);
+        $newUri = UriBuilderFacade::fromComponents($components)->getUri();
+        $this->assertSame($expected, (string) $newUri);
+
+        $newUri = UriBuilderFacade::fromUri($newUri)->getUri();
+        $this->assertSame($expected, (string) $newUri);
     }
 }

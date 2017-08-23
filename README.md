@@ -34,10 +34,11 @@ Usage example:
 // Simple URI string
 $uri = 'wss://foo.bar:9999';
 
-// UriBuilder needs UriFactory to work, therefore let's create it..
-$factory = new K911\UriBuilder\UriFactory();
-
-// Create UriBuilder
+// Create UriBuilder and its dependencies
+// ..you should either use DI container to manage it
+// ..or use UriBuilder facade
+$parser = new K911\UriBuilder\Adapter\UriParserAdapter();
+$factory = new K911\UriBuilder\UriFactory($parser);
 $builder = new K911\UriBuilder\UriBuilder($factory);
 
 // Intiliaze UriBuilder with URI string

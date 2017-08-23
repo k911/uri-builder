@@ -9,7 +9,6 @@ use K911\UriBuilder\Adapter\FtpUriAdapter;
 use K911\UriBuilder\Adapter\WsUriAdapter;
 use K911\UriBuilder\Exception\InvalidArgumentException;
 use K911\UriBuilder\Exception\NotSupportedException;
-use League\Uri\Parser;
 use League\Uri\Schemes\Http;
 use Psr\Http\Message\UriInterface;
 
@@ -34,17 +33,6 @@ class UriFactory extends AbstractUriFactory
     ];
 
     /**
-     * @var Parser
-     */
-    protected $parser;
-
-    public function __construct(Parser $parser = null)
-    {
-        // TODO: Delete this workaround, when Parser interface is done
-        $this->parser = $parser ?? (new Parser());
-    }
-
-    /**
      * Create a new Uri instance from a hash of parse_url parts
      * Remarks: Scheme part is required.
      *
@@ -66,17 +54,5 @@ class UriFactory extends AbstractUriFactory
 
         // TODO: Big workaround, probably has to create URI objects myself to prevent this
         return call_user_func([$class, 'createFromComponents'], $components);
-    }
-
-    /**
-     * Parses an URI string into array of components.
-     * This method MUST return array with all parts (their keys) accessible.
-     *
-     * @param string $uri An URI string to be parsed
-     * @return array a hash representation of the URI similar to PHP parse_url function result
-     */
-    public function parse(string $uri): array
-    {
-        return $this->normalizeComponents($this->parser->__invoke($uri));
     }
 }

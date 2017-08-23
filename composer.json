@@ -16,7 +16,7 @@
     },
     "scripts": {
         "test": "phpunit; php-cs-fixer fix src/ -v --diff --dry-run --allow-risky=yes;",
-        "fix": "php-cs-fixer fix src/ -v; php-cs-fixer fix tests/ -v;"
+        "fix": "php-cs-fixer fix src/ -v; php-cs-fixer fix tests/ -v; php-cs-fixer fix examples/ -v;"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.2",
