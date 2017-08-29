@@ -1,0 +1,44 @@
+version: 2
+
+jobs:
+  build:
+    environment:
+      CC_TEST_REPORTER_ID: 595f9c45165ce294b2c614a1c1321ecf83602073b57b50e82066410cc76ccafe
+    docker:
+      - image: circleci/php:7.1-fpm
+        environment:
+          APP_ENV: test
+    working_directory: ~/app
+    steps:
+      - run:
+          name: Update system packages
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libicu-dev
+            sudo pecl channel-update pecl.php.net
+      - run:
+          name: Show enviroment informations
+          command: |
+            php --version
+            composer --version
+      - run:
+          name: Prepare docker enviroment
+          command: |
+            sudo docker-php-ext-enable xdebug
+            sudo docker-php-ext-install intl
+            sudo docker-php-ext-configure intl
+            sudo docker-php-ext-enable intl
+      - checkout
+      - run: composer install
+      - run:
+          name: Tests with code coverage
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            sudo mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+            ./cc-test-reporter before-build
+            sudo vendor/bin/phpunit --coverage-clover clover.xml
+            ./cc-test-reporter after-build -t clover --exit-code $?
+      - run:
+          name: Code-style analysis
+          command: vendor/bin/php-cs-fixer fix src/ -v --diff --dry-run --allow-risky=yes;
