@@ -1,5 +1,11 @@
 # UriBuilder
+[![CircleCI](https://circleci.com/gh/k911/uri-builder.svg?style=svg)](https://circleci.com/gh/k911/uri-builder)
+
 Simplifies manipulation of URI value objects compatible with PSR-7. Under the hood, it utilizes `League\Uri` powerful [library](http://uri.thephpleague.com/). Dependency Injection ready.
+
+[![Code Climate](https://codeclimate.com/github/k911/uri-builder/badges/gpa.svg)](https://codeclimate.com/github/k911/uri-builder)
+[![Test Coverage](https://codeclimate.com/github/k911/uri-builder/badges/coverage.svg)](https://codeclimate.com/github/k911/uri-builder/coverage)
+[![Issue Count](https://codeclimate.com/github/k911/uri-builder/badges/issue_count.svg)](https://codeclimate.com/github/k911/uri-builder)
 
 - [Installation](#installation)
 - [Supported Schemes](#supported-schemes)
