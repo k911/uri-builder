@@ -3,19 +3,18 @@ version: 2
 jobs:
   build:
     environment:
-      CC_TEST_REPORTER_ID: 595f9c45165ce294b2c614a1c1321ecf83602073b57b50e82066410cc76ccafe
+      APP_ENV: test
     docker:
-      - image: circleci/php:7.1-fpm
-        environment:
-          APP_ENV: test
+      - image: circleci/php:7.1-browsers
     working_directory: ~/app
     steps:
       - run:
           name: Update system packages
           command: |
-            sudo apt-get update
-            sudo apt-get install -y libicu-dev
-            sudo pecl channel-update pecl.php.net
+            sudo apt-get -q update
+            sudo apt-get -y -q install libicu-dev
+            # sudo pecl channel-update pecl.php.net
+            sudo composer self-update
       - run:
           name: Show enviroment informations
           command: |
@@ -25,17 +24,36 @@ jobs:
           name: Prepare docker enviroment
           command: |
             sudo docker-php-ext-enable xdebug
-            sudo docker-php-ext-install intl
             sudo docker-php-ext-configure intl
+            sudo docker-php-ext-install intl
             sudo docker-php-ext-enable intl
       - checkout
-      - run: composer install
+      - restore_cache:
+          keys:
+            - composer-v1-{{ .Branch }}-{{ checksum "composer.json" }}
+            - composer-v1-{{ .Branch }}
+            - composer-v1
+      - run: composer install -n --prefer-dist
       - run:
-          name: Tests with code coverage
+          name: Configure cc-reporter
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
-            sudo mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+      - save_cache:
+          key: composer-v1-{{ .Branch }}-{{ checksum "composer.json" }}
+          paths:
+            - vendor
+      - save_cache:
+          key: composer-v1-{{ .Branch }}
+          paths:
+            - vendor
+      - save_cache:
+          key: composer-v1
+          paths:
+            - vendor
+      - run:
+          name: Tests with code coverage
+          command: |
             ./cc-test-reporter before-build
             sudo vendor/bin/phpunit --coverage-clover clover.xml
             ./cc-test-reporter after-build -t clover --exit-code $?
