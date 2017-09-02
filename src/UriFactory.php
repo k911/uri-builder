@@ -9,6 +9,7 @@ use K911\UriBuilder\Adapter\FtpUriAdapter;
 use K911\UriBuilder\Adapter\WsUriAdapter;
 use K911\UriBuilder\Exception\InvalidArgumentException;
 use K911\UriBuilder\Exception\NotSupportedException;
+use League\Uri\Schemes\AbstractUri;
 use League\Uri\Schemes\Http;
 use Psr\Http\Message\UriInterface;
 
@@ -38,7 +39,7 @@ class UriFactory extends AbstractUriFactory
      *
      * @param array $components a hash representation of the URI similar
      *                          to PHP parse_url function result
-     * @return UriInterface Newly created URI value object
+     * @return UriInterface|AbstractUri Newly created URI value object
      *
      * @throws NotSupportedException
      *
@@ -50,9 +51,11 @@ class UriFactory extends AbstractUriFactory
             throw new InvalidArgumentException('Part URI scheme from components array cannot be empty.');
         }
 
-        $class = $this->getClass($components['scheme']);
+        /**
+         * @var static|AbstractUri Class name of instance of AbstractUri;
+         */
+        $abstractUri = $this->getClass($components['scheme']);
 
-        // TODO: Big workaround, probably has to create URI objects myself to prevent this
-        return call_user_func([$class, 'createFromComponents'], $components);
+        return $abstractUri::createFromComponents($components);
     }
 }
