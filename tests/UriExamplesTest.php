@@ -30,8 +30,6 @@ class UriExamplesTest extends TestCase
      *
      * @param string $expected
      * @param string $example
-     *
-     * @return void
      */
     public function testExamples(string $expected, string $example)
     {

@@ -2,11 +2,12 @@
 declare(strict_types=1);
 
 use K911\UriBuilder\Adapter\UriParserAdapter;
+use K911\UriBuilder\UriParserInterface;
 use PHPUnit\Framework\TestCase;
 
 class UriParserTest extends TestCase
 {
-    public const EMPTY_COMPONENTS = [
+    private const EMPTY_COMPONENTS = [
         'scheme' => null,
         'user' => null,
         'pass' => null,
@@ -22,7 +23,7 @@ class UriParserTest extends TestCase
      */
     private $parser;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->parser = new UriParserAdapter();
     }
@@ -98,22 +99,21 @@ class UriParserTest extends TestCase
                 ],
                 'file://cdn.example.com/foo/bar',
             ],
-            'file' => [
+            'file relative w/o host' => [
                 [
                     'scheme' => 'file',
-                    'host' => 'localhost',
+                    'host' => '',
                     'path' => '/../foo/bar',
                 ],
                 'file:///../foo/bar',
             ],
-            'file' => [
+            'file relative w/ host' => [
                 [
                     'scheme' => 'file',
                     'host' => 'example.com',
-                    'port' => 3333,
                     'path' => '/../foo/bar',
                 ],
-                'file://example.com:3333/../foo/bar',
+                'file://example.com/../foo/bar',
             ],
             'data' => [
                 [
@@ -128,7 +128,7 @@ class UriParserTest extends TestCase
     /**
      * @dataProvider validUriProvider
      *
-     * @param string $expected
+     * @param array $expected
      * @param string $uri
      */
     public function testUriToComponents(array $expected, string $uri)

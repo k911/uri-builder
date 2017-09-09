@@ -41,6 +41,7 @@ class UriFactory extends AbstractUriFactory
      *                          to PHP parse_url function result
      * @return UriInterface|AbstractUri Newly created URI value object
      *
+     * @throws InvalidArgumentException
      * @throws NotSupportedException
      *
      * @see http://php.net/manual/en/function.parse-url.php

@@ -59,8 +59,8 @@ class UriBuilder implements UriBuilderInterface
 
     public function setScheme(string $scheme): UriBuilderInterface
     {
-        if (!isset($this->uri)) {
-            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        if (null === $this->uri) {
+            throw new InvalidArgumentException('UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.', 404);
         }
 
         $this->uri = $this->factory->isSchemeCompatible($scheme, $this->uri) ?
@@ -72,8 +72,8 @@ class UriBuilder implements UriBuilderInterface
 
     public function setUserInfo(string $user, string $password = null): UriBuilderInterface
     {
-        if (!isset($this->uri)) {
-            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        if (null === $this->uri) {
+            throw new InvalidArgumentException('UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.', 404);
         }
 
         $this->uri = $this->uri->withUserInfo($user, $password);
@@ -83,8 +83,8 @@ class UriBuilder implements UriBuilderInterface
 
     public function setHost(string $host): UriBuilderInterface
     {
-        if (!isset($this->uri)) {
-            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        if (null === $this->uri) {
+            throw new InvalidArgumentException('UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.', 404);
         }
 
         $this->uri = $this->uri->withHost($host);
@@ -94,8 +94,8 @@ class UriBuilder implements UriBuilderInterface
 
     public function setPort(int $port = null): UriBuilderInterface
     {
-        if (!isset($this->uri)) {
-            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        if (null === $this->uri) {
+            throw new InvalidArgumentException('UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.', 404);
         }
 
         $this->uri = $this->uri->withPort($port);
@@ -105,8 +105,8 @@ class UriBuilder implements UriBuilderInterface
 
     public function setPath(string $path): UriBuilderInterface
     {
-        if (!isset($this->uri)) {
-            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        if (null === $this->uri) {
+            throw new InvalidArgumentException('UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.', 404);
         }
 
         $this->uri = $this->uri->withPath($path);
@@ -116,8 +116,8 @@ class UriBuilder implements UriBuilderInterface
 
     public function setQuery(array $pairs): UriBuilderInterface
     {
-        if (!isset($this->uri)) {
-            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        if (null === $this->uri) {
+            throw new InvalidArgumentException('UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.', 404);
         }
 
         $query = http_build_query($pairs, '', static::URI_QUERY_SEPARATOR, static::PHP_QUERY_RFC);
@@ -128,8 +128,8 @@ class UriBuilder implements UriBuilderInterface
 
     public function setFragment(string $fragment): UriBuilderInterface
     {
-        if (!isset($this->uri)) {
-            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        if (null === $this->uri) {
+            throw new InvalidArgumentException('UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.', 404);
         }
 
         $this->uri = $this->uri->withFragment($fragment);
@@ -139,8 +139,8 @@ class UriBuilder implements UriBuilderInterface
 
     public function getUri(): UriInterface
     {
-        if (!isset($this->uri)) {
-            throw new InvalidArgumentException("UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.", 404);
+        if (null === $this->uri) {
+            throw new InvalidArgumentException('UriBuilder is not initialized with any Uri instance. Please initialize it using either `from` methods or constructor.', 404);
         }
 
         return clone $this->uri;

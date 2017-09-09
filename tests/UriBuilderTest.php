@@ -2,20 +2,21 @@
 declare(strict_types=1);
 
 use K911\UriBuilder\Adapter\UriParserAdapter;
-use K911\UriBuilder\UriParserInterface;
+use K911\UriBuilder\Facade\UriBuilder as UriBuilderFacade;
 use K911\UriBuilder\UriBuilder;
 use K911\UriBuilder\UriBuilderInterface;
 use K911\UriBuilder\UriFactory;
 use K911\UriBuilder\UriFactoryInterface;
-use K911\UriBuilder\Facade\UriBuilder as UriBuilderFacade;
+use K911\UriBuilder\UriParserInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\UriInterface;
 
 class UriBuilderTest extends TestCase
 {
     /**
      * Not used host in valid uri providers
      */
-    const UNUSED_HOST = 'unused.host.com';
+    private const UNUSED_HOST = 'unused.host.com';
 
     /**
      * @var UriBuilderInterface
@@ -23,7 +24,7 @@ class UriBuilderTest extends TestCase
     private $builder;
 
     /**
-     * @var UriFactorynterface
+     * @var UriFactoryInterface
      */
     private $factory;
 
@@ -32,7 +33,7 @@ class UriBuilderTest extends TestCase
      */
     private $parser;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->parser = new UriParserAdapter();
         $this->factory = new UriFactory($this->parser);
@@ -46,9 +47,9 @@ class UriBuilderTest extends TestCase
                 'file://localhost/../foo/bar',
                 'file:///../foo/bar',
             ],
-            'file' => [
-                'file://localhost/../foo/bar',
-                'file://./../foo/bar',
+            'file relative' => [
+                'file://localhost/./../foo/bar',
+                'file:///./../foo/bar',
             ],
             'data' => [
                 'data:text/plain;charset=utf-8,FooBarWithSpecialChars%20%20%C4%85%C4%87%C4%99%C5%82',
@@ -99,8 +100,9 @@ class UriBuilderTest extends TestCase
      */
     public function testSetUpfrom(string $expected, string $uri)
     {
-        $uri = $this->builder->from($uri)->getUri();
-        $this->assertSame($expected, (string) $uri);
+        $uriObject = $this->builder->from($uri)->getUri();
+        $this->assertInstanceOf(UriInterface::class, $uriObject);
+        $this->assertSame($expected, (string)$uriObject);
     }
 
     /**
@@ -115,8 +117,9 @@ class UriBuilderTest extends TestCase
         $components = parse_url($uri);
         $this->assertNotEquals(false, $components);
 
-        $uri = $this->builder->fromComponents($components)->getUri();
-        $this->assertSame($expected, (string) $uri);
+        $uriObject = $this->builder->fromComponents($components)->getUri();
+        $this->assertInstanceOf(UriInterface::class, $uriObject);
+        $this->assertSame($expected, (string)$uriObject);
     }
 
     /**
@@ -127,22 +130,22 @@ class UriBuilderTest extends TestCase
      */
     public function testImmutability(string $expected, string $uri)
     {
-        $uri = $this->builder->from($uri)
-            ->getUri();
+        $uriObject = $this->builder->from($uri)->getUri();
 
-        $newUri = $this->builder->fromUri($uri)
+        $newUri = $this->builder->fromUri($uriObject)
             ->setHost(self::UNUSED_HOST)
             ->getUri();
 
-        $this->assertFalse($uri === $newUri);
-        $this->assertNotEquals((string) $uri, (string) $newUri);
-        $this->assertNotEquals($expected, (string) $newUri);
+        $this->assertInstanceOf(UriInterface::class, $newUri);
+        $this->assertNotSame($uri, $newUri);
+        $this->assertNotEquals((string)$uriObject, (string)$newUri);
+        $this->assertNotEquals($expected, (string)$newUri);
 
-        $expected = $this->builder->from($expected)
+        $expectedUri = $this->builder->from($expected)
             ->setHost(self::UNUSED_HOST)
             ->getUri();
 
-        $this->assertSame((string) $expected, (string) $newUri);
+        $this->assertSame((string)$expectedUri, (string)$newUri);
     }
 
     /**
@@ -154,14 +157,14 @@ class UriBuilderTest extends TestCase
     public function testFacade(string $expected, string $uri)
     {
         $newUri = UriBuilderFacade::from($uri)->getUri();
-        $this->assertSame($expected, (string) $newUri);
+        $this->assertSame($expected, (string)$newUri);
 
         // TODO: Use Parser() instead
         $components = parse_url($uri);
         $newUri = UriBuilderFacade::fromComponents($components)->getUri();
-        $this->assertSame($expected, (string) $newUri);
+        $this->assertSame($expected, (string)$newUri);
 
         $newUri = UriBuilderFacade::fromUri($newUri)->getUri();
-        $this->assertSame($expected, (string) $newUri);
+        $this->assertSame($expected, (string)$newUri);
     }
 }
