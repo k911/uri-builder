@@ -13,7 +13,6 @@ use Psr\Http\Message\UriInterface;
 
 class UriFactoryTest extends TestCase
 {
-
     private const EMPTY_COMPONENTS = [
         'scheme' => null,
         'user' => null,

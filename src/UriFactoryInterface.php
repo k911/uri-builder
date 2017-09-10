@@ -18,6 +18,7 @@ interface UriFactoryInterface
      * Remarks: URI string must be valid and therefore consist of URI scheme.
      *
      * @param string $uri URI string
+     *
      * @return UriInterface Newly created URI value object
      */
     public function create(string $uri): UriInterface;
@@ -28,6 +29,7 @@ interface UriFactoryInterface
      *
      * @param array $components a hash representation of the URI similar
      *                          to PHP parse_url function result
+     *
      * @return UriInterface Newly created URI value object
      *
      * @see http://php.net/manual/en/function.parse-url.php
@@ -36,30 +38,29 @@ interface UriFactoryInterface
 
     /**
      * Transforms an existing Uri instance into new Uri instance
-     * with support for different URI scheme and optionally adjusted URI components
+     * with support for different URI scheme and optionally adjusted URI components.
+     * Scheme must be supported by UriFactory.
      *
      * @param UriInterface $uri An Uri instance to be transformed
      * @param string $scheme New URI scheme
+     *
      * @return UriInterface New, transformed Uri instance compatible with provided scheme
      */
     public function transform(UriInterface $uri, string $scheme): UriInterface;
 
     /**
-     * Determines whether provided Uri instance is compatible with provided URI scheme
-     * Remarks: When URI scheme is compatible it means that an Uri instance does not need
-     * to be transformed to support this scheme
-     *
-     * @param string $scheme An URI scheme
-     * @param UriInterface $uri An Uri instance
-     * @return bool
-     */
-    public function isSchemeCompatible(string $scheme, UriInterface $uri): bool;
-
-    /**
      * Determines whether provided URI scheme is supported by the UriFactory
      *
      * @param string $scheme An URI scheme
+     *
      * @return bool
      */
     public function isSchemeSupported(string $scheme): bool;
+
+    /**
+     * Gets normalized scheme names (in lowercase) that are supported by UriFactory.
+     *
+     * @return string[]
+     */
+    public function getSupportedSchemes(): array ;
 }

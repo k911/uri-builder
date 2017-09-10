@@ -11,6 +11,7 @@ interface UriBuilderInterface
      * Create a new Uri instance from an URI string in UriBuilderInterface
      *
      * @param string $uri URI string
+     *
      * @return UriBuilderInterface
      */
     public function from(string $uri): self;
@@ -19,6 +20,7 @@ interface UriBuilderInterface
      * Clones an Uri instance and assigns to an UriBuilderInterface
      *
      * @param UriInterface $uri
+     *
      * @return UriBuilderInterface
      */
     public function fromUri(UriInterface $uri): self;
@@ -28,6 +30,7 @@ interface UriBuilderInterface
      *
      * @param array $components a hash representation of the URI similar
      *                          to PHP parse_url function result
+     *
      * @return UriBuilderInterface
      */
     public function fromComponents(array $components): self;
@@ -37,6 +40,7 @@ interface UriBuilderInterface
      * Set the scheme component of the URI.
      *
      * @param string $scheme The URI scheme
+     *
      * @return UriBuilderInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
@@ -52,6 +56,7 @@ interface UriBuilderInterface
      *
      * @param string $user The user name to use for authority.
      * @param null|string $password The password associated with $user.
+     *
      * @return UriBuilderInterface
      */
     public function setUserInfo(string $user, string $password = null): self;
@@ -62,6 +67,7 @@ interface UriBuilderInterface
      * An empty host value is equivalent to removing the host.
      *
      * @param string $host The hostname to use with the new instance.
+     *
      * @return UriBuilderInterface
      */
     public function setHost(string $host): self;
@@ -77,6 +83,7 @@ interface UriBuilderInterface
      *
      * @param int|null $port The port to use with the new instance; a null value
      *                       removes the port information.
+     *
      * @return UriBuilderInterface
      */
     public function setPort(int $port = null): self;
@@ -97,6 +104,7 @@ interface UriBuilderInterface
      * Implementations ensure the correct encoding as outlined in getPath().
      *
      * @param string $path The path to use with the new instance.
+     *
      * @return UriBuilderInterface
      */
     public function setPath(string $path): self;
@@ -116,6 +124,7 @@ interface UriBuilderInterface
      * An empty array is equivalent to removing the query pairs.
      *
      * @param string[] $pairs Pairs of "key=value" represented in URI as query
+     *
      * @return UriBuilderInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
@@ -132,6 +141,7 @@ interface UriBuilderInterface
      * An empty fragment value is equivalent to removing the fragment.
      *
      * @param string $fragment The fragment to use with the new instance.
+     *
      * @return UriBuilderInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2

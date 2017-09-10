@@ -23,7 +23,7 @@ $builder
     ->setPort(443)
     // domain-related paths must always start with forward slash '/'
     ->setPath('/v1')
-    // query string is generated safetly from pairs according to RFC1738
+    // query string is generated safetly from pairs according to RFC3986
     ->setQuery([
         'api_token' => 'Qwerty! @#$TYu'
     ]);
@@ -31,4 +31,4 @@ $builder
 
 // Print result
 echo (string) $builder->getUri() . PHP_EOL;
-// https://api.foo.bar/v1?api_token=Qwerty%21+%40%23%24TYu#foobar
+// https://api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar

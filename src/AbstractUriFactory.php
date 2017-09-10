@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace K911\UriBuilder;
 
-use K911\UriBuilder\Exception\NotSupportedException;
+use K911\UriBuilder\Exception\NotSupportedSchemeException;
 use Psr\Http\Message\UriInterface;
 
 abstract class AbstractUriFactory implements UriFactoryInterface
@@ -30,6 +30,7 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      * Remarks: URI string must be valid and therefore consist of URI scheme.
      *
      * @param string $uri URI string
+     *
      * @return UriInterface Newly created URI value object
      */
     public function create(string $uri): UriInterface
@@ -39,18 +40,26 @@ abstract class AbstractUriFactory implements UriFactoryInterface
 
     /**
      * Transforms an existing Uri instance into new Uri instance
-     * with support for different URI scheme and optionally adjusted URI components
+     * with support for different URI scheme and optionally adjusted URI components.
+     * Scheme must be supported by UriFactory.
      *
      * @param UriInterface $uri An Uri instance to be transformed
      * @param string $scheme New URI scheme
+     *
      * @return UriInterface New, transformed Uri instance compatible with provided scheme
      *
-     * @throws NotSupportedException
+     * @throws NotSupportedSchemeException
      */
     public function transform(UriInterface $uri, string $scheme): UriInterface
     {
-        $components = $this->parser->parse((string) $uri);
-        $components['scheme'] = $this->normalizeString($scheme);
+        $schemeNormalized = $this->normalizeString($scheme);
+
+        if ($this->isSchemeCompatible($scheme, $uri)) {
+            return $uri->withScheme($schemeNormalized);
+        }
+
+        $components = $this->parser->parse((string)$uri);
+        $components['scheme'] = $schemeNormalized;
         return $this->createFromComponents($components);
     }
 
@@ -58,17 +67,40 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      * Gets fully qualified class name of UriInstance that support scheme provided
      *
      * @param string $scheme An supported by UriFactory URI scheme
+     *
      * @return string UriInterface::class
      *
-     * @throws NotSupportedException
+     * @throws NotSupportedSchemeException
      */
-    public function getClass(string $scheme): string
+    public function getSchemeClass(string $scheme): string
     {
         if (!$this->isSchemeSupported($scheme)) {
-            throw new NotSupportedException("Scheme `$scheme` has not yet been supported by the library.", 500);
+            throw new NotSupportedSchemeException($scheme);
         }
 
         return static::SUPPORTED_SCHEMES[$this->normalizeString($scheme)];
+    }
+
+    /**
+     * Determines whether provided URI scheme is supported by the UriFactory
+     *
+     * @param string $scheme An URI scheme
+     *
+     * @return bool
+     */
+    public function isSchemeSupported(string $scheme): bool
+    {
+        return array_key_exists($this->normalizeString($scheme), static::SUPPORTED_SCHEMES);
+    }
+
+    /**
+     * Gets normalized scheme names (in lowercase) that are supported by UriFactory.
+     *
+     * @return string[]
+     */
+    public function getSupportedSchemes(): array
+    {
+        return array_keys(static::SUPPORTED_SCHEMES);
     }
 
     /**
@@ -78,32 +110,21 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      *
      * @param string $scheme An URI scheme
      * @param UriInterface $uri An Uri instance
+     *
      * @return bool
      *
-     * @throws NotSupportedException
+     * @throws NotSupportedSchemeException
      */
-    public function isSchemeCompatible(string $scheme, UriInterface $uri): bool
+    protected function isSchemeCompatible(string $scheme, UriInterface $uri): bool
     {
-        $class = $this->getClass($scheme);
-        return $uri instanceof $class;
+        return $this->getSchemeClass($scheme) === $this->getSchemeClass($uri->getScheme());
     }
-
-    /**
-     * Determines whether provided URI scheme is supported by the UriFactory
-     *
-     * @param string $scheme An URI scheme
-     * @return bool
-     */
-    public function isSchemeSupported(string $scheme): bool
-    {
-        return array_key_exists($this->normalizeString($scheme), static::SUPPORTED_SCHEMES);
-    }
-
 
     /**
      * Lowercase and trim string
      *
      * @param string $input
+     *
      * @return string
      */
     protected function normalizeString(string $input): string

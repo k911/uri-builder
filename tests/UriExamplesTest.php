@@ -14,11 +14,11 @@ class UriExamplesTest extends TestCase
     {
         return [
             'Uri Facade usage' => [
-                'https://api.foo.bar/v1?api_token=Qwerty%21+%40%23%24TYu#foobar',
+                'https://api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar',
                 'facade',
             ],
             'Readme' => [
-                'https://api.foo.bar/v1?api_token=Qwerty%21+%40%23%24TYu#foobar',
+                'https://api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar',
                 'readme',
             ],
         ];

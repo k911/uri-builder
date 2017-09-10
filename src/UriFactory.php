@@ -8,7 +8,7 @@ use K911\UriBuilder\Adapter\FileUriAdapter;
 use K911\UriBuilder\Adapter\FtpUriAdapter;
 use K911\UriBuilder\Adapter\WsUriAdapter;
 use K911\UriBuilder\Exception\InvalidArgumentException;
-use K911\UriBuilder\Exception\NotSupportedException;
+use K911\UriBuilder\Exception\NotSupportedSchemeException;
 use League\Uri\Schemes\AbstractUri;
 use League\Uri\Schemes\Http;
 use Psr\Http\Message\UriInterface;
@@ -20,7 +20,7 @@ class UriFactory extends AbstractUriFactory
 {
     /**
      * Supported schemes and corresponding Uri instance classes
-     * @var array Key => string, Value => UriInterface::class
+     * Array<string, string UriInterface::class>
      */
     protected const SUPPORTED_SCHEMES = [
         'data' => DataUriAdapter::class,
@@ -42,7 +42,7 @@ class UriFactory extends AbstractUriFactory
      * @return UriInterface|AbstractUri Newly created URI value object
      *
      * @throws InvalidArgumentException
-     * @throws NotSupportedException
+     * @throws NotSupportedSchemeException
      *
      * @see http://php.net/manual/en/function.parse-url.php
      */
@@ -55,7 +55,7 @@ class UriFactory extends AbstractUriFactory
         /**
          * @var static|AbstractUri Class name of instance of AbstractUri;
          */
-        $abstractUri = $this->getClass($components['scheme']);
+        $abstractUri = $this->getSchemeClass($components['scheme']);
 
         return $abstractUri::createFromComponents($components);
     }

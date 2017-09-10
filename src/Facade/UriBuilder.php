@@ -27,7 +27,7 @@ final class UriBuilder
 
     /**
      * Create a new UriBuilder instance
-     * Initilializing it from an URI string
+     * Initializing it from an URI string
      *
      * @param string $uri URI string
      * @return UriBuilderInterface
@@ -40,7 +40,7 @@ final class UriBuilder
 
     /**
      * Create a new UriBuilder instance
-     * Initilializing it from an actual Uri instance
+     * Initializing it from an actual Uri instance
      *
      * @param UriInterface $uri
      * @return UriBuilderInterface
@@ -53,7 +53,7 @@ final class UriBuilder
 
     /**
      * Create a new UriBuilder instance
-     * Initilializing it from a hash of parse_url parts
+     * Initializing it from a hash of parse_url parts
      *
      * @param array $components a hash representation of the URI similar
      *                          to PHP parse_url function result
@@ -67,7 +67,7 @@ final class UriBuilder
 
 
     /**
-     * Gets factroy instance (singleton)
+     * Gets factory instance (always the same)
      *
      * @return UriFactoryInterface
      */
