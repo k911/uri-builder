@@ -23,14 +23,15 @@ class UriFactory extends AbstractUriFactory
      * Array<string, string UriInterface::class>
      */
     protected const SUPPORTED_SCHEMES = [
-        'data' => DataUriAdapter::class,
-        'file' => FileUriAdapter::class,
-        'ftp' => FtpUriAdapter::class,
-        'sftp' => FtpUriAdapter::class,
+        'data'  => DataUriAdapter::class,
+        'file'  => FileUriAdapter::class,
+        'ftp'   => FtpUriAdapter::class,
+        'sftp'  => FtpUriAdapter::class,
+        'ftps'  => FtpUriAdapter::class,
         'https' => Http::class,
-        'http' => Http::class,
-        'ws' => WsUriAdapter::class,
-        'wss' => WsUriAdapter::class,
+        'http'  => Http::class,
+        'ws'    => WsUriAdapter::class,
+        'wss'   => WsUriAdapter::class,
     ];
 
     /**
@@ -39,6 +40,7 @@ class UriFactory extends AbstractUriFactory
      *
      * @param array $components a hash representation of the URI similar
      *                          to PHP parse_url function result
+     *
      * @return UriInterface|AbstractUri Newly created URI value object
      *
      * @throws InvalidArgumentException
@@ -53,7 +55,7 @@ class UriFactory extends AbstractUriFactory
         }
 
         /**
-         * @var static|AbstractUri Class name of instance of AbstractUri;
+         * @var static|AbstractUri $abstractUri Class name of instance of AbstractUri;
          */
         $abstractUri = $this->getSchemeClass($components['scheme']);
 

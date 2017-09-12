@@ -11,7 +11,7 @@ use Throwable;
 class NotSupportedSchemeException extends InvalidArgumentException
 {
     /**
-     * @param string $scheme
+     * @param string    $scheme
      * @param Throwable $previous [optional] The previous throwable used for the exception chaining.
      */
     public function __construct(string $scheme, Throwable $previous = null)

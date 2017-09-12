@@ -54,7 +54,7 @@ interface UriBuilderInterface
      * user; an empty string for the user is equivalent to removing user
      * information.
      *
-     * @param string $user The user name to use for authority.
+     * @param string      $user     The user name to use for authority.
      * @param null|string $password The password associated with $user.
      *
      * @return UriBuilderInterface

@@ -41,8 +41,8 @@ interface UriFactoryInterface
      * with support for different URI scheme and optionally adjusted URI components.
      * Scheme must be supported by UriFactory.
      *
-     * @param UriInterface $uri An Uri instance to be transformed
-     * @param string $scheme New URI scheme
+     * @param UriInterface $uri    An Uri instance to be transformed
+     * @param string       $scheme New URI scheme
      *
      * @return UriInterface New, transformed Uri instance compatible with provided scheme
      */
@@ -62,5 +62,5 @@ interface UriFactoryInterface
      *
      * @return string[]
      */
-    public function getSupportedSchemes(): array ;
+    public function getSupportedSchemes(): array;
 }

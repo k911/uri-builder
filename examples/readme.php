@@ -22,16 +22,16 @@ $builder->from($uri);
 $builder
     // under the hood, it automatically transforms Uri object
     ->setScheme('https')
-    // simple host setters
+    // simple setters
     ->setHost('api.foo.bar')
     ->setFragment('foobar')
     // setting DEFAULT port for https scheme
     ->setPort(443)
     // domain-related paths must always start with forward slash '/'
     ->setPath('/v1')
-    // query string is generated safetly from pairs according to RFC3986
+    // query string is generated safely from pairs according to RFC3986
     ->setQuery([
-        'api_token' => 'Qwerty! @#$TYu'
+        'api_token' => 'Qwerty! @#$TYu',
     ]);
 
 

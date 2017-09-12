@@ -17,7 +17,7 @@ class UriExamplesTest extends TestCase
                 'https://api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar',
                 'facade',
             ],
-            'Readme' => [
+            'Readme'           => [
                 'https://api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar',
                 'readme',
             ],

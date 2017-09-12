@@ -25,5 +25,5 @@ interface UriParserInterface
      *                  - `fragment` => string|null URI fragment (after '#')
      *
      */
-    public function parse(string $uri) : array;
+    public function parse(string $uri): array;
 }

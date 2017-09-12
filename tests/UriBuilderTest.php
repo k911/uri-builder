@@ -43,7 +43,7 @@ class UriBuilderTest extends TestCase
     public function validUriProvider(): array
     {
         return array_merge([
-            'file' => [
+            'file'          => [
                 'file://localhost/../foo/bar',
                 'file:///../foo/bar',
             ],
@@ -51,17 +51,17 @@ class UriBuilderTest extends TestCase
                 'file://localhost/./../foo/bar',
                 'file:///./../foo/bar',
             ],
-            'data' => [
+            'data'          => [
                 'data:text/plain;charset=utf-8,FooBarWithSpecialChars%20%20%C4%85%C4%87%C4%99%C5%82',
                 'data:text/plain;charset=utf-8,FooBarWithSpecialChars%20%20%C4%85%C4%87%C4%99%C5%82',
-            ]
+            ],
         ], $this->validUriWithHostProvider());
     }
 
     public function validUriWithHostProvider(): array
     {
         return [
-            'http' => [
+            'http'  => [
                 'http://example.com/foo/bar?foo=bar#content',
                 'http://example.com:80/foo/bar?foo=bar#content',
             ],
@@ -69,23 +69,23 @@ class UriBuilderTest extends TestCase
                 'https://example.com/foo/bar?foo=bar',
                 'https://example.com:443/foo/bar?foo=bar',
             ],
-            'ftp' => [
+            'ftp'   => [
                 'ftp://user:password@example.com',
                 'ftp://user:password@example.com:21',
             ],
-            'ftps' => [
+            'ftps'  => [
                 'sftp://user@example.com/foo/bar',
                 'sftp://user@example.com:22/foo/bar',
             ],
-            'ws' => [
+            'ws'    => [
                 'ws://example.com/foo/bar?foo=bar',
                 'Ws://eXamPLE.cOm:80/foo/bar?foo=bar',
             ],
-            'wss' => [
+            'wss'   => [
                 'wss://example.com/foo/bar?foo=bar',
                 'WsS://eXamPLE.cOm:443/foo/bar?foo=bar',
             ],
-            'file' => [
+            'file'  => [
                 'file://cdn.example.com/foo/bar',
                 'file://cdn.eXamPLE.cOm/foo/bar',
             ],
@@ -102,7 +102,7 @@ class UriBuilderTest extends TestCase
     {
         $uriObject = $this->builder->from($uri)->getUri();
         $this->assertInstanceOf(UriInterface::class, $uriObject);
-        $this->assertSame($expected, (string)$uriObject);
+        $this->assertSame($expected, (string) $uriObject);
     }
 
     /**
@@ -119,7 +119,7 @@ class UriBuilderTest extends TestCase
 
         $uriObject = $this->builder->fromComponents($components)->getUri();
         $this->assertInstanceOf(UriInterface::class, $uriObject);
-        $this->assertSame($expected, (string)$uriObject);
+        $this->assertSame($expected, (string) $uriObject);
     }
 
     /**
@@ -138,14 +138,14 @@ class UriBuilderTest extends TestCase
 
         $this->assertInstanceOf(UriInterface::class, $newUri);
         $this->assertNotSame($uri, $newUri);
-        $this->assertNotEquals((string)$uriObject, (string)$newUri);
-        $this->assertNotEquals($expected, (string)$newUri);
+        $this->assertNotEquals((string) $uriObject, (string) $newUri);
+        $this->assertNotEquals($expected, (string) $newUri);
 
         $expectedUri = $this->builder->from($expected)
             ->setHost(self::UNUSED_HOST)
             ->getUri();
 
-        $this->assertSame((string)$expectedUri, (string)$newUri);
+        $this->assertSame((string) $expectedUri, (string) $newUri);
     }
 
     /**
@@ -157,14 +157,14 @@ class UriBuilderTest extends TestCase
     public function testFacade(string $expected, string $uri)
     {
         $newUri = UriBuilderFacade::from($uri)->getUri();
-        $this->assertSame($expected, (string)$newUri);
+        $this->assertSame($expected, (string) $newUri);
 
         // TODO: Use Parser() instead
         $components = parse_url($uri);
         $newUri = UriBuilderFacade::fromComponents($components)->getUri();
-        $this->assertSame($expected, (string)$newUri);
+        $this->assertSame($expected, (string) $newUri);
 
         $newUri = UriBuilderFacade::fromUri($newUri)->getUri();
-        $this->assertSame($expected, (string)$newUri);
+        $this->assertSame($expected, (string) $newUri);
     }
 }

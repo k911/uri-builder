@@ -37,6 +37,7 @@ class UriBuilder implements UriBuilderInterface
 
     /**
      * UriBuilder constructor.
+     *
      * @param UriFactoryInterface $factory
      */
     public function __construct(UriFactoryInterface $factory)
@@ -54,6 +55,7 @@ class UriBuilder implements UriBuilderInterface
     public function from(string $uri): UriBuilderInterface
     {
         $this->uri = $this->factory->create($uri);
+
         return $this;
     }
 
@@ -67,6 +69,7 @@ class UriBuilder implements UriBuilderInterface
     public function fromUri(UriInterface $uri): UriBuilderInterface
     {
         $this->uri = clone $uri;
+
         return $this;
     }
 
@@ -81,6 +84,7 @@ class UriBuilder implements UriBuilderInterface
     public function fromComponents(array $components): UriBuilderInterface
     {
         $this->uri = $this->factory->createFromComponents($components);
+
         return $this;
     }
 
@@ -100,6 +104,7 @@ class UriBuilder implements UriBuilderInterface
         $this->validateState();
 
         $this->uri = $this->factory->transform($this->uri, $scheme);
+
         return $this;
     }
 
@@ -110,7 +115,7 @@ class UriBuilder implements UriBuilderInterface
      * user; an empty string for the user is equivalent to removing user
      * information.
      *
-     * @param string $user The user name to use for authority.
+     * @param string      $user     The user name to use for authority.
      * @param null|string $password The password associated with $user.
      *
      * @return UriBuilderInterface
@@ -122,6 +127,7 @@ class UriBuilder implements UriBuilderInterface
         $this->validateState();
 
         $this->uri = $this->uri->withUserInfo($user, $password);
+
         return $this;
     }
 
@@ -142,6 +148,7 @@ class UriBuilder implements UriBuilderInterface
         $this->validateState();
 
         $this->uri = $this->uri->withHost($host);
+
         return $this;
     }
 
@@ -167,6 +174,7 @@ class UriBuilder implements UriBuilderInterface
         $this->validateState();
 
         $this->uri = $this->uri->withPort($port);
+
         return $this;
     }
 
@@ -198,6 +206,7 @@ class UriBuilder implements UriBuilderInterface
         $this->validateState();
 
         $this->uri = $this->uri->withPath($path);
+
         return $this;
     }
 
@@ -233,6 +242,7 @@ class UriBuilder implements UriBuilderInterface
         $query = http_build_query($pairs, '', static::URI_QUERY_SEPARATOR, static::PHP_QUERY_RFC);
 
         $this->uri = $this->uri->withQuery($query);
+
         return $this;
     }
 
@@ -258,6 +268,7 @@ class UriBuilder implements UriBuilderInterface
         $this->validateState();
 
         $this->uri = $this->uri->withFragment($fragment);
+
         return $this;
     }
 

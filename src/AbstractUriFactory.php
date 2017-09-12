@@ -43,8 +43,8 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      * with support for different URI scheme and optionally adjusted URI components.
      * Scheme must be supported by UriFactory.
      *
-     * @param UriInterface $uri An Uri instance to be transformed
-     * @param string $scheme New URI scheme
+     * @param UriInterface $uri    An Uri instance to be transformed
+     * @param string       $scheme New URI scheme
      *
      * @return UriInterface New, transformed Uri instance compatible with provided scheme
      *
@@ -58,8 +58,9 @@ abstract class AbstractUriFactory implements UriFactoryInterface
             return $uri->withScheme($schemeNormalized);
         }
 
-        $components = $this->parser->parse((string)$uri);
+        $components = $this->parser->parse((string) $uri);
         $components['scheme'] = $schemeNormalized;
+
         return $this->createFromComponents($components);
     }
 
@@ -108,8 +109,8 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      * Remarks: When URI scheme is compatible it means that an Uri instance does not need
      * to be transformed to support this scheme
      *
-     * @param string $scheme An URI scheme
-     * @param UriInterface $uri An Uri instance
+     * @param string       $scheme An URI scheme
+     * @param UriInterface $uri    An Uri instance
      *
      * @return bool
      *
