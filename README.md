@@ -1,7 +1,7 @@
 # UriBuilder
 [![CircleCI](https://circleci.com/gh/k911/uri-builder.svg?style=svg)](https://circleci.com/gh/k911/uri-builder)
 
-Simplifies manipulation of URI value objects compatible with PSR-7. Under the hood, it utilizes `League\Uri` powerful [library](http://uri.thephpleague.com/). Dependency Injection ready.
+Simplifies manipulation of URI value objects compatible with PSR-7. Under the hood, it utilizes `League\Uri` powerful [library](http://uri.thephpleague.com/).
 
 [![Code Climate](https://codeclimate.com/github/k911/uri-builder/badges/gpa.svg)](https://codeclimate.com/github/k911/uri-builder)
 [![Test Coverage](https://codeclimate.com/github/k911/uri-builder/badges/coverage.svg)](https://codeclimate.com/github/k911/uri-builder/coverage)
@@ -13,7 +13,7 @@ Simplifies manipulation of URI value objects compatible with PSR-7. Under the ho
 
 ## Installation
 ```
-// soon
+$ composer require k911/uri-builder
 ```
 
 ## Supported Schemes
@@ -66,6 +66,6 @@ $builder
 
 
 // Print result
-echo (string) $builder->getUri() . PHP_EOL;
+echo (string) $builder->getUri();
 // https://user:password@api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar
 ```
