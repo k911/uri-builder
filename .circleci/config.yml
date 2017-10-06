@@ -16,8 +16,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - composer-v1-{{ .Branch }}-{{ checksum "composer.json" }}
-            - composer-v1-{{ .Branch }}
+            - composer-v1-{{ arch }}-{{ .Branch }}-{{ checksum "composer.json" }}
+            - composer-v1-{{ arch }}-{{ .Branch }}
+            - composer-v1-{{ arch }}
             - composer-v1
       - run: composer install -n --prefer-dist
       - run:
@@ -26,11 +27,15 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
       - save_cache:
-          key: composer-v1-{{ .Branch }}-{{ checksum "composer.json" }}
+          key: composer-v1-{{ arch }}-{{ .Branch }}-{{ checksum "composer.json" }}
           paths:
             - vendor
       - save_cache:
-          key: composer-v1-{{ .Branch }}
+          key: composer-v1-{{ arch }}-{{ .Branch }}
+          paths:
+            - vendor
+      - save_cache:
+          key: composer-v1-{{ arch }}
           paths:
             - vendor
       - save_cache:

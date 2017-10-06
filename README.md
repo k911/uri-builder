@@ -50,7 +50,7 @@ $builder->from($uri);
 $builder
     // under the hood, it automatically transforms Uri object
     ->setScheme('https')
-    // simple host setters
+    // simple setters
     ->setHost('api.foo.bar')
     ->setFragment('foobar')
     // setting DEFAULT port for https scheme
@@ -59,11 +59,13 @@ $builder
     ->setPath('/v1')
     // query string is generated safely from pairs according to RFC3986
     ->setQuery([
-        'api_token' => 'Qwerty! @#$TYu'
-    ]);
+        'api_token' => 'Qwerty! @#$TYu',
+    ])
+    // set user info (password can be omitted)
+    ->setUserInfo('user', 'password');
 
 
 // Print result
 echo (string) $builder->getUri() . PHP_EOL;
-// https://api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar
+// https://user:password@api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar
 ```

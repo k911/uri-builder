@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace K911\UriBuilder;
+namespace K911\UriBuilder\Contracts;
 
 /**
  * Interface UriParser describes behaviour of parsing and validating an URI string

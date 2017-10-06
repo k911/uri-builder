@@ -9,6 +9,7 @@ use K911\UriBuilder\Adapter\FtpUriAdapter;
 use K911\UriBuilder\Adapter\WsUriAdapter;
 use K911\UriBuilder\Exception\InvalidArgumentException;
 use K911\UriBuilder\Exception\NotSupportedSchemeException;
+use K911\UriBuilder\Extensions\AbstractUriFactory;
 use League\Uri\Schemes\AbstractUri;
 use League\Uri\Schemes\Http;
 use Psr\Http\Message\UriInterface;

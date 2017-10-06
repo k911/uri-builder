@@ -1,13 +1,12 @@
 <?php
 declare(strict_types=1);
 
+namespace Tests\UriBuilder;
+
 use K911\UriBuilder\Adapter\UriParserAdapter;
 use K911\UriBuilder\Facade\UriBuilder as UriBuilderFacade;
 use K911\UriBuilder\UriBuilder;
-use K911\UriBuilder\UriBuilderInterface;
 use K911\UriBuilder\UriFactory;
-use K911\UriBuilder\UriFactoryInterface;
-use K911\UriBuilder\UriParserInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 
@@ -19,26 +18,28 @@ class UriBuilderTest extends TestCase
     private const UNUSED_HOST = 'unused.host.com';
 
     /**
-     * @var UriBuilderInterface
+     * @var \K911\UriBuilder\UriBuilder
      */
     private $builder;
 
     /**
-     * @var UriFactoryInterface
+     * @var \K911\UriBuilder\Contracts\UriFactoryInterface
      */
     private $factory;
 
     /**
-     * @var UriParserInterface
+     * @var \K911\UriBuilder\Contracts\UriParserInterface
      */
     private $parser;
 
-    protected function setUp()
+
+    protected function setUp(): void
     {
         $this->parser = new UriParserAdapter();
         $this->factory = new UriFactory($this->parser);
         $this->builder = new UriBuilder($this->factory);
     }
+
 
     public function validUriProvider(): array
     {
@@ -57,6 +58,7 @@ class UriBuilderTest extends TestCase
             ],
         ], $this->validUriWithHostProvider());
     }
+
 
     public function validUriWithHostProvider(): array
     {
@@ -92,18 +94,20 @@ class UriBuilderTest extends TestCase
         ];
     }
 
+
     /**
      * @dataProvider validUriProvider
      *
      * @param string $expected
      * @param string $uri
      */
-    public function testSetUpfrom(string $expected, string $uri)
+    public function testSetUpFrom(string $expected, string $uri)
     {
         $uriObject = $this->builder->from($uri)->getUri();
         $this->assertInstanceOf(UriInterface::class, $uriObject);
         $this->assertSame($expected, (string) $uriObject);
     }
+
 
     /**
      * @dataProvider validUriWithHostProvider
@@ -111,7 +115,7 @@ class UriBuilderTest extends TestCase
      * @param string $expected
      * @param string $uri
      */
-    public function testSetUpfromComponents(string $expected, string $uri)
+    public function testSetUpFromComponents(string $expected, string $uri)
     {
         // TODO: Use Parser() instead
         $components = parse_url($uri);
@@ -121,6 +125,7 @@ class UriBuilderTest extends TestCase
         $this->assertInstanceOf(UriInterface::class, $uriObject);
         $this->assertSame($expected, (string) $uriObject);
     }
+
 
     /**
      * @dataProvider validUriWithHostProvider
@@ -148,6 +153,17 @@ class UriBuilderTest extends TestCase
         $this->assertSame((string) $expectedUri, (string) $newUri);
     }
 
+
+    /**
+     * @expectedException \K911\UriBuilder\Exception\UriBuilderException
+     * @expectedExceptionMessage UriBuilder is not initialized with any Uri instance.
+     */
+    public function testGetUriOnEmptyBuilder()
+    {
+        $this->builder->getUri();
+    }
+
+
     /**
      * @dataProvider validUriWithHostProvider
      *
@@ -166,5 +182,20 @@ class UriBuilderTest extends TestCase
 
         $newUri = UriBuilderFacade::fromUri($newUri)->getUri();
         $this->assertSame($expected, (string) $newUri);
+    }
+
+
+    /**
+     * @expectedException \K911\UriBuilder\Exception\UriBuilderException
+     * @expectedExceptionMessage UriBuilder Facade object cannot be constructed.
+     */
+    public function testFacadeConstructFail()
+    {
+        $reflection = new \ReflectionClass(UriBuilderFacade::class);
+        $constructor = $reflection->getConstructor();
+        $constructor->setAccessible(true);
+
+        $object = $reflection->newInstanceWithoutConstructor();
+        $constructor->invoke($object);
     }
 }

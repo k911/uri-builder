@@ -1,11 +1,14 @@
 <?php
+declare(strict_types=1);
+
+namespace Tests\UriFactory;
 
 use K911\UriBuilder\Adapter\DataUriAdapter;
 use K911\UriBuilder\Adapter\FileUriAdapter;
 use K911\UriBuilder\Adapter\FtpUriAdapter;
 use K911\UriBuilder\Adapter\WsUriAdapter;
+use K911\UriBuilder\Contracts\UriParserInterface;
 use K911\UriBuilder\UriFactory;
-use K911\UriBuilder\UriParserInterface;
 use League\Uri\Schemes\Http;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
@@ -24,14 +27,15 @@ class UriFactoryTest extends TestCase
     ];
 
     /**
-     * @var UriFactory
+     * @var \K911\UriBuilder\UriFactory
      */
     private $factory;
 
     /**
-     * @var UriParserInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var \K911\UriBuilder\Contracts\UriParserInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $parser;
+
 
     protected function setUp()
     {
@@ -41,6 +45,7 @@ class UriFactoryTest extends TestCase
 
         $this->factory = new UriFactory($this->parser);
     }
+
 
     public function supportedSchemesProvider(): array
     {
@@ -83,6 +88,7 @@ class UriFactoryTest extends TestCase
 
         $this->assertSame(sort($providerSupportedSchemes, SORT_STRING), sort($supportedSchemes, SORT_STRING));
     }
+
 
     public function validUriProvider(): array
     {
@@ -162,6 +168,7 @@ class UriFactoryTest extends TestCase
         $this->assertNotSame($uriObject, $this->factory->create($uri));
     }
 
+
     /**
      * @dataProvider validUriProvider
      *
@@ -182,6 +189,7 @@ class UriFactoryTest extends TestCase
         $this->assertNotSame($uriObject, $this->factory->createFromComponents($components));
     }
 
+
     /**
      * @dataProvider supportedSchemesProvider
      *
@@ -200,6 +208,7 @@ class UriFactoryTest extends TestCase
         }
     }
 
+
     /**
      * @dataProvider validUriProvider
      *
@@ -210,9 +219,28 @@ class UriFactoryTest extends TestCase
         $this->parser->expects($this->never())
             ->method('parse');
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         unset($components['scheme']);
         $this->factory->createFromComponents($components);
+    }
+
+    public function testSimpleTransform()
+    {
+        $httpUri = $this->factory->createFromComponents(parse_url('http://google.com'));
+        $httpsUri = $this->factory->createFromComponents(parse_url('https://google.com'));
+        $this->assertNotSame((string) $httpUri, (string) $httpsUri);
+
+        $transformedUri = $this->factory->transform($httpUri, 'https');
+        $this->assertSame((string) $httpsUri, (string) $transformedUri);
+    }
+
+
+    /**
+     * @expectedException  \K911\UriBuilder\Exception\NotSupportedSchemeException
+     */
+    public function testGetUnsupportedSchemeClass()
+    {
+        $this->factory->getSchemeClass('git');
     }
 }

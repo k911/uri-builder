@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
+namespace Tests\UriParser;
+
 use K911\UriBuilder\Adapter\UriParserAdapter;
-use K911\UriBuilder\UriParserInterface;
+use K911\UriBuilder\Contracts\UriParserInterface;
 use PHPUnit\Framework\TestCase;
 
 class UriParserTest extends TestCase
@@ -23,10 +25,12 @@ class UriParserTest extends TestCase
      */
     private $parser;
 
+
     protected function setUp()
     {
         $this->parser = new UriParserAdapter();
     }
+
 
     public function validUriProvider(): array
     {
@@ -124,6 +128,7 @@ class UriParserTest extends TestCase
             ],
         ];
     }
+
 
     /**
      * @dataProvider validUriProvider

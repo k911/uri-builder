@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace K911\UriBuilder;
+namespace K911\UriBuilder\Contracts;
 
 use Psr\Http\Message\UriInterface;
 
@@ -12,18 +12,20 @@ interface UriBuilderInterface
      *
      * @param string $uri URI string
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      */
     public function from(string $uri): self;
+
 
     /**
      * Clones an Uri instance and assigns to an UriBuilderInterface
      *
      * @param UriInterface $uri
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      */
     public function fromUri(UriInterface $uri): self;
+
 
     /**
      * Create a new Uri instance from a hash of parse_url parts in UriBuilderInterface
@@ -31,7 +33,7 @@ interface UriBuilderInterface
      * @param array $components a hash representation of the URI similar
      *                          to PHP parse_url function result
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      */
     public function fromComponents(array $components): self;
 
@@ -41,11 +43,12 @@ interface UriBuilderInterface
      *
      * @param string $scheme The URI scheme
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
      */
     public function setScheme(string $scheme): self;
+
 
     /**
      * Sets the specified user information for Uri instance.
@@ -57,9 +60,10 @@ interface UriBuilderInterface
      * @param string      $user     The user name to use for authority.
      * @param null|string $password The password associated with $user.
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      */
     public function setUserInfo(string $user, string $password = null): self;
+
 
     /**
      * Sets the specified host to an Uri instance.
@@ -68,9 +72,10 @@ interface UriBuilderInterface
      *
      * @param string $host The hostname to use with the new instance.
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      */
     public function setHost(string $host): self;
+
 
     /**
      * Sets the specified port to an Uri instance.
@@ -84,9 +89,10 @@ interface UriBuilderInterface
      * @param int|null $port The port to use with the new instance; a null value
      *                       removes the port information.
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      */
     public function setPort(int $port = null): self;
+
 
     /**
      * Sets the specified path to an Uri instance.
@@ -105,9 +111,10 @@ interface UriBuilderInterface
      *
      * @param string $path The path to use with the new instance.
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      */
     public function setPath(string $path): self;
+
 
     /**
      * Sets the specified query pairs to an Uri instance.
@@ -125,12 +132,13 @@ interface UriBuilderInterface
      *
      * @param string[] $pairs Pairs of "key=value" represented in URI as query
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
      */
     public function setQuery(array $pairs): self;
+
 
     /**
      * Set the specified URI fragment to an Uri instance.
@@ -142,17 +150,18 @@ interface UriBuilderInterface
      *
      * @param string $fragment The fragment to use with the new instance.
      *
-     * @return UriBuilderInterface
+     * @return \K911\UriBuilder\Contracts\UriBuilderInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      */
     public function setFragment(string $fragment): self;
 
+
     /**
      * Return clone of internal value object representing an URI.
      *
-     * @return UriInterface
+     * @return \Psr\Http\Message\UriInterface
      *
      * @see http://www.php-fig.org/psr/psr-7/ (UriInterface specification)
      * @see http://tools.ietf.org/html/rfc3986 (the URI specification)

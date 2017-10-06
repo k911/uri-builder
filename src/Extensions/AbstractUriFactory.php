@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace K911\UriBuilder;
+namespace K911\UriBuilder\Extensions;
 
+use K911\UriBuilder\Contracts\UriFactoryInterface;
+use K911\UriBuilder\Contracts\UriParserInterface;
 use K911\UriBuilder\Exception\NotSupportedSchemeException;
 use Psr\Http\Message\UriInterface;
 
@@ -16,39 +18,35 @@ abstract class AbstractUriFactory implements UriFactoryInterface
     protected const SUPPORTED_SCHEMES = [];
 
     /**
-     * @var UriParserInterface
+     * @var \K911\UriBuilder\Contracts\UriParserInterface
      */
     protected $parser;
 
+
+    /**
+     * AbstractUriFactory constructor.
+     *
+     * @param \K911\UriBuilder\Contracts\UriParserInterface $parser
+     */
     public function __construct(UriParserInterface $parser)
     {
         $this->parser = $parser;
     }
 
     /**
-     * Create a new Uri instance from an URI string
-     * Remarks: URI string must be valid and therefore consist of URI scheme.
-     *
-     * @param string $uri URI string
-     *
-     * @return UriInterface Newly created URI value object
+     * @inheritdoc
      */
     public function create(string $uri): UriInterface
     {
         return $this->createFromComponents($this->parser->parse($uri));
     }
 
+
     /**
-     * Transforms an existing Uri instance into new Uri instance
-     * with support for different URI scheme and optionally adjusted URI components.
-     * Scheme must be supported by UriFactory.
+     * {@inheritdoc}
      *
-     * @param UriInterface $uri    An Uri instance to be transformed
-     * @param string       $scheme New URI scheme
-     *
-     * @return UriInterface New, transformed Uri instance compatible with provided scheme
-     *
-     * @throws NotSupportedSchemeException
+     * @throws \K911\UriBuilder\Exception\NotSupportedSchemeException
+     * @throws \InvalidArgumentException
      */
     public function transform(UriInterface $uri, string $scheme): UriInterface
     {
@@ -71,7 +69,7 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      *
      * @return string UriInterface::class
      *
-     * @throws NotSupportedSchemeException
+     * @throws \K911\UriBuilder\Exception\NotSupportedSchemeException
      */
     public function getSchemeClass(string $scheme): string
     {
@@ -83,11 +81,7 @@ abstract class AbstractUriFactory implements UriFactoryInterface
     }
 
     /**
-     * Determines whether provided URI scheme is supported by the UriFactory
-     *
-     * @param string $scheme An URI scheme
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function isSchemeSupported(string $scheme): bool
     {
@@ -95,9 +89,7 @@ abstract class AbstractUriFactory implements UriFactoryInterface
     }
 
     /**
-     * Gets normalized scheme names (in lowercase) that are supported by UriFactory.
-     *
-     * @return string[]
+     * @inheritdoc
      */
     public function getSupportedSchemes(): array
     {
@@ -114,7 +106,7 @@ abstract class AbstractUriFactory implements UriFactoryInterface
      *
      * @return bool
      *
-     * @throws NotSupportedSchemeException
+     * @throws \K911\UriBuilder\Exception\NotSupportedSchemeException
      */
     protected function isSchemeCompatible(string $scheme, UriInterface $uri): bool
     {
@@ -122,7 +114,7 @@ abstract class AbstractUriFactory implements UriFactoryInterface
     }
 
     /**
-     * Lowercase and trim string
+     * Helper: Lowercase and trim string
      *
      * @param string $input
      *

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use K911\UriBuilder\Facade\UriBuilder;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 // Simple URI string
@@ -8,7 +10,7 @@ $uri = 'wss://foo.bar:9999';
 
 // Intiliaze UriBuilder with URI string using facade
 // Facade takes care of managing UriBuilder dependencies
-$builder = K911\UriBuilder\Facade\UriBuilder::from($uri);
+$builder = UriBuilder::from($uri);
 // or UriBuilder::fromUri(UriInterface $uri);
 // or UriBuilder::fromComponents(array $components);
 
@@ -26,9 +28,10 @@ $builder
     // query string is generated safely from pairs according to RFC3986
     ->setQuery([
         'api_token' => 'Qwerty! @#$TYu',
-    ]);
-
+    ])
+    // password can be null
+    ->setUserInfo('user', 'password');
 
 // Print result
 echo (string) $builder->getUri() . PHP_EOL;
-// https://api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar
+// https://user:password@api.foo.bar/v1?api_token=Qwerty%21%20%40%23%24TYu#foobar

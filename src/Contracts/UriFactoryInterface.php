@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace K911\UriBuilder;
+namespace K911\UriBuilder\Contracts;
 
 use Psr\Http\Message\UriInterface;
 
@@ -19,9 +19,10 @@ interface UriFactoryInterface
      *
      * @param string $uri URI string
      *
-     * @return UriInterface Newly created URI value object
+     * @return \Psr\Http\Message\UriInterface Newly created URI value object
      */
     public function create(string $uri): UriInterface;
+
 
     /**
      * Create a new Uri instance from a hash of parse_url parts
@@ -30,23 +31,25 @@ interface UriFactoryInterface
      * @param array $components a hash representation of the URI similar
      *                          to PHP parse_url function result
      *
-     * @return UriInterface Newly created URI value object
+     * @return \Psr\Http\Message\UriInterface Newly created URI value object
      *
      * @see http://php.net/manual/en/function.parse-url.php
      */
     public function createFromComponents(array $components): UriInterface;
+
 
     /**
      * Transforms an existing Uri instance into new Uri instance
      * with support for different URI scheme and optionally adjusted URI components.
      * Scheme must be supported by UriFactory.
      *
-     * @param UriInterface $uri    An Uri instance to be transformed
-     * @param string       $scheme New URI scheme
+     * @param \Psr\Http\Message\UriInterface $uri    An Uri instance to be transformed
+     * @param string                         $scheme New URI scheme
      *
-     * @return UriInterface New, transformed Uri instance compatible with provided scheme
+     * @return \Psr\Http\Message\UriInterface New, transformed Uri instance compatible with provided scheme
      */
     public function transform(UriInterface $uri, string $scheme): UriInterface;
+
 
     /**
      * Determines whether provided URI scheme is supported by the UriFactory
@@ -56,6 +59,7 @@ interface UriFactoryInterface
      * @return bool
      */
     public function isSchemeSupported(string $scheme): bool;
+
 
     /**
      * Gets normalized scheme names (in lowercase) that are supported by UriFactory.

@@ -1,11 +1,7 @@
-# User
-spikes/
-
-# Vendor
-.vscode/
-.idea/
+# Vendors
+.vscode
+.idea
+vendor
 
 # Package
-composer.lock
 .php_cs.cache
-vendor/
